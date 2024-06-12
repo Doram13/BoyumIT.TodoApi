@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using BoyumIT.TodoApi.Models;
-using BoyumIT.TodoApi;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
+using BoyumIT.TodoApi.Services;
 
-public class FunctionalTestFactory : WebApplicationFactory<Program>
+public class FunctionalTestFactory : WebApplicationFactory<Program> // New Test entry point needed instead of Program
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -26,7 +26,7 @@ public class FunctionalTestFactory : WebApplicationFactory<Program>
             {
                 options.UseInMemoryDatabase("InMemoryDbForTesting");
             });
-
+            services.AddScoped<ITodoItemService, TodoItemService>();
             // Build the service provider.
             var sp = services.BuildServiceProvider();
 

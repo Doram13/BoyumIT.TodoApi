@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using BoyumIT.TodoApi.Models;
 using BoyumIT.TodoApi.Services;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
