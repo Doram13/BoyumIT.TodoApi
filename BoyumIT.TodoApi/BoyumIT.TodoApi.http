@@ -1,0 +1,6 @@
+@BoyumIT.TodoApi_HostAddress = http://localhost:5078
+
+GET {{BoyumIT.TodoApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
