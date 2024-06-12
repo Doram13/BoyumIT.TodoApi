@@ -29,7 +29,6 @@ namespace BoyumIT.TodoApi.Services
         {
             try
             {
-                // Set the creation dateTime to now
                 todoItem.CreationTime = DateTime.UtcNow;
 
                 _context.TodoItems.Add(todoItem);
