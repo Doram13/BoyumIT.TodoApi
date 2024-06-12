@@ -1,5 +1,4 @@
-﻿using BoyumIT.TodoApi.Controllers;
-using BoyumIT.TodoApi.Models;
+﻿using BoyumIT.TodoApi.Models;
 using BoyumIT.TodoApi.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,31 +27,51 @@ namespace BoyumIT.TodoApi.Services
 
         public async Task<TodoItem> CreateTodoItemAsync(TodoItem todoItem)
         {
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
-            return todoItem;
+            try
+            {
+                // Set the creation dateTime to now
+                todoItem.CreationTime = DateTime.UtcNow;
+
+                _context.TodoItems.Add(todoItem);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Todo item created successfully with ID {TodoItemId}", todoItem.Id);
+                return todoItem;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating a todo item.");
+                throw;
+            }
         }
 
         public async Task<TodoItem> UpdateTodoItemAsync(Guid id, TodoItem todoItem)
         {
             if (id != todoItem.Id)
             {
+                _logger.LogWarning("Attempted to update a todo item with mismatched ID {TodoItemId}", id);
                 return null;
             }
+
+            todoItem.UpdateTime = DateTime.UtcNow;
 
             _context.Entry(todoItem).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("Todo item with ID {TodoItemId} updated successfully", todoItem.Id);
+
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!TodoItemExists(id))
                 {
+                    _logger.LogWarning("Attempted to update a non-existing todo item with ID {TodoItemId}", id);
                     return null;
                 }
                 else
                 {
+                    LogErrorWithTodoItemContext(ex, "updating the values of", id);
                     throw;
                 }
             }
@@ -78,11 +97,23 @@ namespace BoyumIT.TodoApi.Services
             var todoItem = await _context.TodoItems.FindAsync(id);
             if (todoItem == null)
             {
+                _logger.LogWarning("Failed to update title. Todo item with ID {TodoItemId} not found.", id);
                 return null;
             }
 
             todoItem.Title = title;
-            await _context.SaveChangesAsync();
+            todoItem.UpdateTime = DateTime.UtcNow;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Todo item with ID {TodoItemId} updated successfully", todoItem.Id);
+            }
+            catch (Exception ex)
+            {
+                LogErrorWithTodoItemContext(ex, "updating the Status", id);
+                throw;
+            }
             return todoItem;
         }
 
@@ -91,11 +122,23 @@ namespace BoyumIT.TodoApi.Services
             var todoItem = await _context.TodoItems.FindAsync(id);
             if (todoItem == null)
             {
+                _logger.LogWarning("Failed to update title. Todo item with ID {TodoItemId} not found.", id);
                 return null;
             }
 
             todoItem.Description = description;
-            await _context.SaveChangesAsync();
+            todoItem.UpdateTime = DateTime.UtcNow;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Todo item with ID {TodoItemId} updated successfully", id);
+            }
+            catch (Exception ex)
+            {
+                LogErrorWithTodoItemContext(ex, "updating the Description", id);
+                throw;
+            }
             return todoItem;
         }
 
@@ -104,17 +147,35 @@ namespace BoyumIT.TodoApi.Services
             var todoItem = await _context.TodoItems.FindAsync(id);
             if (todoItem == null)
             {
+                _logger.LogWarning("Failed to update title. Todo item with ID {TodoItemId} not found.", id);
                 return null;
             }
 
             todoItem.Status = status;
-            await _context.SaveChangesAsync();
+            todoItem.UpdateTime = DateTime.UtcNow;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Todo item with ID {TodoItemId} updated successfully", id);
+
+            }
+            catch (Exception ex)
+            {
+                LogErrorWithTodoItemContext(ex, "updating the Status", id);
+                throw;
+            }
             return todoItem;
         }
 
         private bool TodoItemExists(Guid id)
         {
             return _context.TodoItems.Any(e => e.Id == id);
+        }
+
+        private void LogErrorWithTodoItemContext(Exception ex, string action, Guid todoItemId)
+        {
+            _logger.LogError(ex, "An error occurred while {Action} of todo item with ID {TodoItemId}.", action, todoItemId);
         }
     }
 }
