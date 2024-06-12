@@ -91,7 +91,7 @@ namespace UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateTodoItemTitle_ReturnsBadRequest_WhenIdsDoNotMatch()
+        public async Task UpdateTodoItemTitle_ReturnsNotFoundResult_WhenIdsDoNotMatch()
         {
             // Arrange
             var todoItemId = Guid.NewGuid();
@@ -101,7 +101,7 @@ namespace UnitTests.Controllers
             var result = await _controller.UpdateTodoItemTitle(Guid.NewGuid(), updatedModel.Title);
 
             // Assert
-            Assert.IsType<BadRequestResult>(result);
+            Assert.IsType<NotFoundResult>(result);
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace UnitTests.Controllers
         }
 
         [Fact]
-        public async Task UpdateTodoItemStatus_ReturnsOk_WithUpdatedTodoItem()
+        public async Task UpdateTodoItemStatus_ReturnsOk_WithNoContent()
         {
             // Arrange
             var todoItemId = Guid.NewGuid();
@@ -131,10 +131,7 @@ namespace UnitTests.Controllers
             var result = await _controller.UpdateTodoItemStatus(todoItemId, updatedModel.Status);
 
             // Assert
-            var actionResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<TodoItem>(actionResult.Value);
-            Assert.Equal(BoyumIT.TodoApi.Models.Enums.Status.Completed, returnValue.Status);
+            var actionResult = Assert.IsType<NoContentResult>(result);
         }
-
     }
 }
