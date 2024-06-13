@@ -1,4 +1,4 @@
-# BoyumIT.TodoApi# BoyumIT.TodoApi
+## BoyumIT.TodoApi 
 
 BoyumIT.TodoApi is a RESTful Web API developed using .NET 8, designed to manage a simple Todo list. It supports operations such as 
 creating a new Todo item, retrieving all Todo items, getting the details of a specific Todo item,
@@ -28,7 +28,7 @@ To run the BoyumIT.TodoApi on your local machine, follow these steps:
 
 4. **Run the project:** "dotnet run"
 
-The API will start on `https://localhost:5001` and `http://localhost:5000` by default.
+The API will start on `https://localhost:5078` and `http://localhost:7209` by default.
 
 ## Testing the API
 
@@ -53,6 +53,7 @@ The API exposes the following endpoints:
 - `PUT /api/todoItems/{id}/Title` - Updates the title of a specific todo item.
 - `PUT /api/todoItems/{id}/Description` - Updates the description of a specific todo item.
 - `PUT /api/todoItems/{id}/Status` - Updates the status of a specific todo item.
+
 ## Contact
 
 For any questions or feedback, feel free to reach out to me at 1991doram@gmail.com
@@ -64,24 +65,32 @@ For any questions or feedback, feel free to reach out to me at 1991doram@gmail.c
 
 ## Architecture
 
-The API follows a clean architecture pattern, separating the application into layers based on their responsibilities.
+The API follows an N-Tier (or Layer) architecture, separating the application into layers based on their responsibilities.
 The layers are currently represented as the following folders: Controllers for "Presentation", Services for "Business Logic",
-and Models for 'Domain'. If a different DB (Sql or NoSQL for example) was to be used then a new Data Access Layer could 
+and Models for 'Domain'. If a different DB (Sql or NoSQL for example) was to be used then a new Data Access Layer (or Persistence) could 
 be created too.
+As the solution grows, and long-term persistence is implemented, we should add UnitOfWork and/or Repository pattern to the Data Access Layer.
+(https://medium.com/@mxcmxc/unit-of-work-with-repository-pattern-boilerplate-518726e4beb7)
 
 ## Improvements
 
-- Add new features as: Due Date with email notification, priority, tag system and relations between tasks, as blocking, or preceeds.
-- Implement a Data Access Layer to interact with a database
+- Add new features as: Due Date with email notification, Priority, Tag system and Relations between tasks, as blocking, or preceeds.
+- Implement a Data Access Layer to interact with a database (with Entity Framework Core, with UnitOfWork and repository patterns)
 - Add Authentication and Authorization
 - Implement Caching for better performance
 - Add more Logging for better monitoring
 - Implement a CI/CD pipeline for automated testing and deployment
-- Add Functional/Integration Tests to test the API end-to-end, and add Performance Tests.
+- Add Functional/Integration Tests to test the API end-to-end, and add Performance Tests
 - Implement a front-end application to consume the API
 - Add more features such as sorting, filtering, and pagination
 - Implement a global exception handler to handle errors
 - Implement a versioning strategy for the API
 - Implement a rate-limiting mechanism to prevent abuse
 - Implement a health check endpoint
-- Add more server-side validation for input data.
+- Add more server-side validation for input data (can use deocorator pattern for this instead of ValidEnumAttribute)
+- Add support for content negotiation (https://restfulapi.net/content-negotiation/)
+- Add support for request/response compression (https://learn.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-8.0)
+- Add Theory type Unit tests for the API endpoints.
+- If we add Azure Functions, as microservices to the solution (for long running async workloads), we could implement a circuit breaker pattern for resilience.
+- Add support for HATEOAS? (https://restfulapi.net/hateoas/)
+- Enforce HTTPS? (https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-8.0&tabs=visual-studio%2Clinux-ubuntu)
