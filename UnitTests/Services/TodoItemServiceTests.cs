@@ -4,16 +4,13 @@ using BoyumIT.TodoApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace UnitTests.Services
 {
     public class TodoItemServiceTests : IDisposable
     {
         private readonly TodoListContext _context; // This is actually an Integration test. As soon as we use a database and add a persistence layer (with UnitOfWork and Repository)
-                                                   // we can mock the dependencies properly. 
+                                                   // we can mock the dependencies properly. This is the main reason we need Data Abstraction and Data Independence, that we don't have here yet.
         private readonly Mock<ILogger<TodoItemService>> _mockLogger;
         private readonly TodoItemService _service;
 
@@ -47,7 +44,7 @@ namespace UnitTests.Services
             Assert.Equal(description, result.Description);
             Assert.Equal(status, result.Status);
         }
-    
+
 
         [Fact(DisplayName = "Check Id validation in TodoItemCreation")]
         public async Task CreateTodoItemAsync_ThrowsInvalidOperationException_WhenIdExists()
