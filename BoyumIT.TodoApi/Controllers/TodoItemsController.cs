@@ -54,6 +54,10 @@ namespace BoyumIT.TodoApi.Controllers
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             var createdTodoItem = await _todoItemService.CreateTodoItemAsync(todoItem);
+            if (createdTodoItem == null) // Todo: Return Conflict if id already exists
+            {
+                return BadRequest();
+            }
             return CreatedAtAction(nameof(GetTodoItem), new { id = createdTodoItem.Id }, createdTodoItem);
         }
 

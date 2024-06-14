@@ -1,9 +1,7 @@
 using BoyumIT.TodoApi.Controllers;
 using BoyumIT.TodoApi.Models;
-using BoyumIT.TodoApi.Models.Enums;
 using BoyumIT.TodoApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Any;
 using Moq;
 
 namespace UnitTests.Controllers

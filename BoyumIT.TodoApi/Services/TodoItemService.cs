@@ -29,6 +29,13 @@ namespace BoyumIT.TodoApi.Services
         {
             try
             {
+                // Check if the TodoItem with the given ID already exists
+                if (_context.TodoItems.Any(e => e.Id == todoItem.Id))
+                {
+                    _logger.LogWarning("Attempted to create a todo item with an existing ID {TodoItemId}", todoItem.Id);
+                    throw new InvalidOperationException($"A todo item with ID {todoItem.Id} already exists.");
+                }
+
                 todoItem.CreationTime = DateTime.UtcNow;
 
                 _context.TodoItems.Add(todoItem);
